@@ -1,0 +1,446 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input BikeImagesInput {
+  """Bike image bike ID"""
+  bikeId: String!
+
+  """Bike image ID"""
+  id: String!
+
+  """Bike image URL"""
+  url: String!
+}
+
+type BikeImagesSchema {
+  """Bike image bike"""
+  bike: BikeSchema!
+
+  """Bike image bike ID"""
+  bikeId: String!
+
+  """Bike image ID"""
+  id: String!
+
+  """Bike image URL"""
+  url: String!
+}
+
+input BikeInput {
+  """Bike is active"""
+  active: Boolean!
+
+  """Bike availability"""
+  available: Boolean!
+
+  """Bike description"""
+  description: String!
+
+  """Bike ID"""
+  id: String!
+
+  """Bike Location"""
+  location: String!
+
+  """Bike max weight"""
+  maxWeight: Float!
+
+  """Bike model"""
+  modelId: String!
+
+  """Bike value per hour"""
+  valuePerHour: Float!
+}
+
+type BikeSchema {
+  """Bike is active"""
+  active: Boolean!
+
+  """Bike availability"""
+  available: Boolean!
+
+  """Bike description"""
+  description: String!
+
+  """Bike ID"""
+  id: String!
+
+  """Bike Location"""
+  location: String!
+
+  """Bike maintenances"""
+  maintenances: [MaintenanceSchema!]!
+
+  """Bike max weight"""
+  maxWeight: Float!
+
+  """Bike model"""
+  model: [ModelSchema!]!
+
+  """Bike model"""
+  modelId: String!
+
+  """Bike value per hour"""
+  valuePerHour: Float!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input MaintenanceInput {
+  """Maintenance was an accident"""
+  accident: Boolean!
+
+  """Maintenance bike ID"""
+  bikeId: String!
+
+  """Maintenance description"""
+  description: String!
+
+  """Maintenance end date"""
+  endDate: DateTime!
+
+  """Maintenance ID"""
+  id: String!
+
+  """Maintenance rent ID"""
+  rentId: String!
+
+  """Maintenance start date"""
+  startDate: DateTime!
+
+  """Maintenance value"""
+  value: Float!
+}
+
+type MaintenanceSchema {
+  """Maintenance was an accident"""
+  accident: Boolean!
+
+  """Maintenance bike"""
+  bike: BikeSchema!
+
+  """Maintenance bike ID"""
+  bikeId: String!
+
+  """Maintenance description"""
+  description: String!
+
+  """Maintenance end date"""
+  endDate: DateTime!
+
+  """Maintenance ID"""
+  id: String!
+
+  """Maintenance rent"""
+  rent: RentSchema!
+
+  """Maintenance rent ID"""
+  rentId: String!
+
+  """Maintenance start date"""
+  startDate: DateTime!
+
+  """Maintenance value"""
+  value: Float!
+}
+
+type ModelProviderSchema {
+  """ModelProvider ID"""
+  id: String!
+
+  """ModelProvider model"""
+  model: ModelSchema!
+
+  """ModelProvider model ID"""
+  modelId: String!
+
+  """ModelProvider provider"""
+  provider: ProviderSchema!
+
+  """ModelProvider provider ID"""
+  providerId: String!
+}
+
+type ModelSchema {
+  """Model bikes """
+  bikes: [BikeSchema!]!
+
+  """Model ID"""
+  id: String!
+
+  """Model providers """
+  models_providers: [ModelProviderSchema!]!
+
+  """Model name"""
+  name: String!
+}
+
+type Mutation {
+  addBikeImages(bikeimage: BikeImagesInput!): BikeImagesSchema!
+  addMaintenance(maintenance: MaintenanceInput!): MaintenanceSchema!
+  addStation(station: stationInput!): StationSchema!
+  addStationType(stn_typ: StationTypeInput!): StationTypeSchema!
+  addType(type: typeInput!): typeSchema!
+  registerBike(bike: BikeInput!): BikeSchema!
+  registerUser(user: userInput!): userSchema!
+  removeBikeByID(id: String!): BikeSchema!
+  removeBikeImages(id: String!): BikeImagesSchema!
+  removeMaintenance(id: String!): MaintenanceSchema!
+  removeRentByID(id: String!): RentSchema!
+  removeStationByID(id: String!): StationSchema!
+  removeStn_typByID(id: String!, typ_id: String!): StationTypeSchema!
+  removeTypeByID(id: String!): typeSchema!
+  removeUserByEmail(email: String!): userSchema!
+  rentBike(bikeId: String!, stationId: String!, userId: String!): RentSchema!
+  returnBike(bikeId: String!, userId: String!): RentSchema!
+  updateBike(bike: BikeInput!): BikeSchema!
+  updateBikeImages(bikeimage: BikeImagesInput!): BikeImagesSchema!
+  updateMaintenance(maintenance: MaintenanceInput!): MaintenanceSchema!
+  updateRent(rent: RentInput!): RentSchema!
+  updateStation(station: stationInput!): StationSchema!
+  updateStn_typ(stn_typ: StationTypeInput!): StationTypeSchema!
+  updateType(type: typeInput!): typeSchema!
+}
+
+type ProviderSchema {
+  """Provider active"""
+  active: Boolean!
+
+  """Provider country of origin"""
+  countryOfOrigin: String!
+
+  """Provider description"""
+  description: String!
+
+  """Provider ID"""
+  id: String!
+
+  """Provider models"""
+  models_providers: [ModelProviderSchema!]!
+
+  """Provider name"""
+  name: String!
+}
+
+type Query {
+  AuthenticateUser(email: String!, password: String!): userSchema!
+  findBikeByID(id: String!): BikeSchema!
+  findBikeImages(id: String!): BikeImagesSchema!
+  findMaintenance(id: String!): MaintenanceSchema!
+  findOpenRentByID(id: String!): RentSchema!
+  findOpenRentsFor(userEmail: String!): [RentSchema!]!
+  findRentById(id: String!): RentSchema!
+  findStationByID(id: String!): StationSchema!
+  findTyepeByID(id: String!, typ_id: String!): StationTypeSchema!
+  findUserByEmail(email: String!): userSchema!
+  findUserByID(id: String!): userSchema!
+  listBikeImages: BikeImagesSchema!
+  listBikes: [BikeSchema!]!
+  listMaintenances: MaintenanceSchema!
+  listRents: [RentSchema!]!
+  listStations: [StationSchema!]!
+  listStn_typ: [StationTypeSchema!]!
+  listTypes: [typeSchema!]!
+  listUsers: [userSchema!]!
+}
+
+input RentInput {
+  """Rent bike ID"""
+  bikeId: String!
+
+  """Rent end date"""
+  endDate: DateTime!
+
+  """Rent ID"""
+  id: String!
+
+  """Rent rating comment"""
+  ratingComment: String!
+
+  """Rent rating value"""
+  ratingValue: Float!
+
+  """Rent start date"""
+  startDate: DateTime!
+
+  """Rent station ID"""
+  stationId: String!
+
+  """Rent user ID"""
+  userId: String!
+
+  """Rent value"""
+  value: Float!
+}
+
+type RentSchema {
+  """Rent bike"""
+  bike: BikeSchema!
+
+  """Rent bike ID"""
+  bikeId: String!
+
+  """Rent end date"""
+  endDate: DateTime!
+
+  """Rent ID"""
+  id: String!
+
+  """Rent maintenances"""
+  maintenances: [MaintenanceSchema!]!
+
+  """Rent rating comment"""
+  ratingComment: String!
+
+  """Rent rating value"""
+  ratingValue: Float!
+
+  """Rent start date"""
+  startDate: DateTime!
+
+  """Rent station"""
+  station: StationSchema!
+
+  """Rent station ID"""
+  stationId: String!
+
+  """Rent user"""
+  user: userSchema!
+
+  """Rent user ID"""
+  userId: String!
+
+  """Rent value"""
+  value: Float!
+}
+
+type StationSchema {
+  """station active"""
+  active: Boolean!
+
+  """station id"""
+  id: String!
+
+  """station location"""
+  location: String!
+
+  """station name"""
+  name: String!
+}
+
+input StationTypeInput {
+  """capacity for a certain bike type"""
+  bikeCapacity: Float!
+
+  """station type description"""
+  description: String!
+
+  """station id"""
+  stationId: String!
+
+  """type id"""
+  typeId: String!
+}
+
+type StationTypeSchema {
+  """capacity for a certain bike type"""
+  bikeCapacity: Float!
+
+  """station type description"""
+  description: String!
+
+  """station id"""
+  stationId: String!
+
+  """type id"""
+  typeId: String!
+}
+
+input stationInput {
+  """station active"""
+  active: Boolean!
+
+  """station ID"""
+  id: String!
+
+  """station location"""
+  location: String!
+
+  """station name"""
+  name: String!
+}
+
+input typeInput {
+  """type description"""
+  description: String!
+
+  """type id"""
+  id: String!
+}
+
+type typeSchema {
+  """type description"""
+  description: String!
+
+  """type id"""
+  id: String!
+}
+
+input userInput {
+  """user active"""
+  active: Boolean!
+
+  """user address"""
+  address: String!
+
+  """user email"""
+  email: String!
+
+  """user ID"""
+  id: String!
+
+  """user name"""
+  name: String!
+
+  """user password"""
+  password: String!
+
+  """user phone"""
+  phone: String!
+
+  """user rg"""
+  rg: String!
+}
+
+type userSchema {
+  """user active"""
+  active: Boolean!
+
+  """user address"""
+  address: String!
+
+  """user email"""
+  email: String!
+
+  """user ID"""
+  id: String!
+
+  """user name"""
+  name: String!
+
+  """user password"""
+  password: String!
+
+  """user phone"""
+  phone: String!
+
+  """user rents"""
+  rents: [RentSchema!]!
+
+  """user rg"""
+  rg: String!
+}
