@@ -10,6 +10,8 @@ import { PrismaService } from './database/service/prisma.service';
 import { UserRepository } from './user/repository/user.repository';
 import { CryptService } from './crypt/crypt.service';
 import { CryptModule } from './crypt/crypt.module';
+import { LoggerModule } from 'nestjs-pino';
+import { CustomLogger } from './logger/custom.logger';
 
 @Module({
   imports: [
@@ -25,8 +27,9 @@ import { CryptModule } from './crypt/crypt.module';
     UserModule,
     DatabaseModule,
     CryptModule,
+    LoggerModule.forRoot({pinoHttp : {level: 'trace'}}),
   ],
   controllers: [],
-  providers: [UserResolver, PrismaService, UserRepository, CryptService],
+  providers: [UserResolver, PrismaService, UserRepository, CryptService, CustomLogger],
 })
 export class AppModule {}
