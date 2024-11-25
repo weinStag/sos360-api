@@ -1,8 +1,10 @@
-import { LoggerService, LogLevel } from "@nestjs/common";
+import { Injectable, LoggerService, LogLevel } from "@nestjs/common";
+import { Injector } from "@nestjs/core/injector/injector";
 import { Context } from "@nestjs/graphql";
 import { trace, warn } from "console";
 import { InjectPinoLogger, PinoLogger } from "nestjs-pino";
 
+@Injectable()
 export class CustomLogger implements LoggerService{
     private static contextRules: Record<string, number> = {};
     private readonly LOG_LEVEL_MAP: Record<string,number> = {
