@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  BikeRentDB:
+  SOS360DB:
     image: 'bitnami/postgresql'
     ports:
       - '5432:5432'
@@ -13,7 +13,7 @@ services:
     networks:
       - docker-network
 
-  BikeRentAPI:
+  SOS360API:
     working_dir: /usr/app
     env_file:
       - .env
