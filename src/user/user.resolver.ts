@@ -7,14 +7,16 @@ import { DuplicatedUserError } from 'src/errors/duplicated-user-error';
 import { WrongPasswordError } from 'src/errors/wrong-password-error';
 import { CryptService } from 'src/crypt/crypt.service';
 import { CustomLogger } from 'src/logger/custom.logger';
+import { LoginResponse } from './schema/login-response.schema';
 
 @Resolver()
 export class UserResolver {
+  authService: any;
   constructor(
     private userRepository: UserRepository,
     private crypt: CryptService,
     private logger: CustomLogger,
-  ) {}
+  ) { }
 
   @Query(() => userSchema)
   async findUserByEmail(@Args('email', { type: () => String }) email: string): Promise<userSchema> {
@@ -72,33 +74,59 @@ export class UserResolver {
     }
   }
 
-  @Query(() => userSchema)
-  async AuthenticateUser(
+  // @Query(() => userSchema)
+  // async AuthenticateUser(
+  //   @Args('email', { type: () => String }) email: string,
+  //   @Args('password', { type: () => String }) password: string,
+  // ): Promise<userSchema> {
+  //   this.logger.log(`Authentication request for user: ${email}`, UserResolver.name);
+
+  //   try {
+  //     const user = await this.userRepository.findByEmail(email);
+  //     if (!user) {
+  //       this.logger.warn(`Authentication failed: User not found for email: ${email}`, UserResolver.name);
+  //       throw new UserNotFoundError();
+  //     }
+
+  //     const isPasswordCorrect = await this.crypt.compare(password, user.password);
+  //     if (!isPasswordCorrect) {
+  //       this.logger.warn(`Authentication failed: Incorrect password for email: ${email}`, UserResolver.name);
+  //       throw new WrongPasswordError();
+  //     }
+
+  //     this.logger.log(`User authenticated successfully: ${email}`, UserResolver.name);
+  //     return user;
+  //   } catch (error) {
+  //     this.logger.error(`Error authenticating user: ${email}`, error.stack, UserResolver.name);
+  //     throw error;
+  //   }
+  // }
+
+  
+  async login(
     @Args('email', { type: () => String }) email: string,
     @Args('password', { type: () => String }) password: string,
-  ): Promise<userSchema> {
-    this.logger.log(`Authentication request for user: ${email}`, UserResolver.name);
+  ): Promise<LoginResponse> {
+    const user = await this.userRepository.findByEmail(email);
 
-    try {
-      const user = await this.userRepository.findByEmail(email);
-      if (!user) {
-        this.logger.warn(`Authentication failed: User not found for email: ${email}`, UserResolver.name);
-        throw new UserNotFoundError();
-      }
-
-      const isPasswordCorrect = await this.crypt.compare(password, user.password);
-      if (!isPasswordCorrect) {
-        this.logger.warn(`Authentication failed: Incorrect password for email: ${email}`, UserResolver.name);
-        throw new WrongPasswordError();
-      }
-
-      this.logger.log(`User authenticated successfully: ${email}`, UserResolver.name);
-      return user;
-    } catch (error) {
-      this.logger.error(`Error authenticating user: ${email}`, error.stack, UserResolver.name);
-      throw error;
+    if (!user) {
+      throw new UserNotFoundError();
     }
+
+    const isPasswordCorrect = await this.crypt.compare(password, user.password);
+
+    if (!isPasswordCorrect) {
+      throw new WrongPasswordError();
+    }
+
+    const token = this.authService.generateToken(user); // Gere um token JWT, por exemplo
+
+    return { user, token };
   }
+
+
+
+    
 
   @Mutation(() => userSchema)
   async removeUserByEmail(@Args('email', { type: () => String }) email: string): Promise<void> {
