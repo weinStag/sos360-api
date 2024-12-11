@@ -107,22 +107,29 @@ export class UserResolver {
     @Args('email', { type: () => String }) email: string,
     @Args('password', { type: () => String }) password: string,
   ): Promise<LoginResponse> {
+    this.logger.log(`Iniciando autenticação para o usuário: ${email}`, 'UserResolver');
+  
     const user = await this.userRepository.findByEmail(email);
-
+  
     if (!user) {
+      this.logger.warn(`Usuário não encontrado para o email: ${email}`, 'UserResolver');
       throw new UserNotFoundError();
     }
-
+  
     const isPasswordCorrect = await this.crypt.compare(password, user.password);
-
+  
     if (!isPasswordCorrect) {
+      this.logger.warn(`Senha incorreta para o email: ${email}`, 'UserResolver');
       throw new WrongPasswordError();
     }
-
-    const token = this.authService.generateToken(user); // Gere um token JWT, por exemplo
-
+  
+    const token = this.authService.generateToken(user); 
+  
+    this.logger.log(`Usuário autenticado com sucesso: ${email}`, 'UserResolver');
+  
     return { user, token };
   }
+  
 
 
 
