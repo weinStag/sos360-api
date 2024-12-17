@@ -27,4 +27,5 @@ model emergency {
   user     String
   email    String  @unique
   password String
-  }
+}
+
