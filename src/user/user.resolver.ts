@@ -102,7 +102,7 @@ export class UserResolver {
   //   }
   // }
 
-  
+  @Query(() => userSchema)
   async login(
     @Args('email', { type: () => String }) email: string,
     @Args('password', { type: () => String }) password: string,
@@ -131,9 +131,6 @@ export class UserResolver {
   }
   
 
-
-
-    
 
   @Mutation(() => userSchema)
   async removeUserByEmail(@Args('email', { type: () => String }) email: string): Promise<void> {
