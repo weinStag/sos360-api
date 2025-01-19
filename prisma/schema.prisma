@@ -10,22 +10,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
-  id       String  @id @default(uuid())
-  name     String
-  email    String  @unique
-  password String
-  rg       String  @unique
-  phone    String  @unique
-  address  String
-  active   Boolean @default(true)
+model user_requester {
+  id          String      @id @default(uuid())
+  name        String
+  email       String      @unique
+  password    String
+  cpf         String      @unique
+  phone       String      @unique
+  address     String
+  emergencies emergency[]
+
+  active Boolean @default(true)
+}
+
+model user_attendant {
+  id          String      @id @default(uuid())
+  name        String
+  email       String      @unique
+  password    String
+  service     Service
+  emergencies emergency[]
+
+  active Boolean @default(true)
 }
 
 model emergency {
-  id       String  @id @default(uuid())
-  name     String
-  user     String
-  email    String  @unique
-  password String
+  id String @id @default(uuid())
+
+  requester        user_requester @relation(fields: [user_requesterId], references: [id])
+  attendant        user_attendant @relation(fields: [user_attendantId], references: [id])
+  type             Service
+  description      String
+  status           Status
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  user_requesterId String
+  user_attendantId String
 }
 
+enum Service {
+  POLICE
+  FIREMAN
+  MEDIC
+}
+
+enum Status {
+  ACTIVE
+  FINISHED
+}
