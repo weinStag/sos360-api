@@ -5,31 +5,25 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: nestjs-api
     ports:
       - "3000:3000"
     env_file:
       - .env
     depends_on:
       - sos360db
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: yarn start:prod
 
   sos360db:
-    image: 'bitnami/postgresql'
-    container_name: postgres-db
+    image: postgres:15
     ports:
       - "5432:5432"
     env_file:
-      - .env
+      - ./.env
     volumes:
-      - postgres-data:/bitnami/postgresql
-    restart: unless-stopped
-    networks:
-      - db_network
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
-  postgres-data:
-
-networks:
-  db_network:
-    driver: bridge
-
+  postgres_data:

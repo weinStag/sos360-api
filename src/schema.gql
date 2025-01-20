@@ -3,23 +3,72 @@
 # ------------------------------------------------------
 
 type Mutation {
-  registerUser(user: userInput!): userSchema!
-  removeUserByEmail(email: String!): userSchema!
+  registerAttendant(attendant: attendantInput!): attendantSchema!
+  registerRequester(requester: requesterInput!): requesterSchema!
+  removeAttendantByEmail(email: String!): attendantSchema!
+  removeAttendantById(id: String!): attendantSchema!
+  removeRequesterByEmail(email: String!): requesterSchema!
+  removeRequesterById(id: String!): requesterSchema!
 }
 
 type Query {
-  AuthenticateUser(email: String!, password: String!): userSchema!
-  findUserByEmail(email: String!): userSchema!
-  findUserByID(id: String!): userSchema!
-  listUsers: [userSchema!]!
+  attendants: [attendantSchema!]!
+  findAttendantByEmail(email: String!): attendantSchema!
+  findAttendantById(id: String!): attendantSchema!
+  findRequesterByEmail(email: String!): requesterSchema!
+  findRequesterById(id: String!): requesterSchema!
+  requesters: [requesterSchema!]!
 }
 
-input userInput {
+input attendantInput {
+  """user active"""
+  active: Boolean!
+
+  """user email"""
+  email: String!
+
+  """user ID"""
+  id: String!
+
+  """user name"""
+  name: String!
+
+  """user password"""
+  password: String!
+
+  """user service"""
+  service: String!
+}
+
+type attendantSchema {
+  """user active"""
+  active: Boolean!
+
+  """user email"""
+  email: String!
+
+  """user ID"""
+  id: String!
+
+  """user name"""
+  name: String!
+
+  """user password"""
+  password: String!
+
+  """attendant service"""
+  service: String!
+}
+
+input requesterInput {
   """user active"""
   active: Boolean!
 
   """user address"""
   address: String!
+
+  """user cpf"""
+  cpf: String!
 
   """user email"""
   email: String!
@@ -35,17 +84,17 @@ input userInput {
 
   """user phone"""
   phone: String!
-
-  """user rg"""
-  rg: String!
 }
 
-type userSchema {
+type requesterSchema {
   """user active"""
   active: Boolean!
 
-  """user address"""
+  """requester address"""
   address: String!
+
+  """requester cpf"""
+  cpf: String!
 
   """user email"""
   email: String!
@@ -59,9 +108,6 @@ type userSchema {
   """user password"""
   password: String!
 
-  """user phone"""
+  """requester phone"""
   phone: String!
-
-  """user rg"""
-  rg: String!
 }
