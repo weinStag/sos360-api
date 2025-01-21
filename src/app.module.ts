@@ -12,6 +12,7 @@ import { CryptService } from './crypt/crypt.service';
 import { CryptModule } from './crypt/crypt.module';
 import { LoggerModule } from 'nestjs-pino';
 import { CustomLogger } from './logger/custom.logger';
+import { EmergencyModule } from './emergency/emergency.module';
 
 @Module({
   imports: [
@@ -30,6 +31,6 @@ import { CustomLogger } from './logger/custom.logger';
     LoggerModule.forRoot({pinoHttp : {level: 'trace'}}),
   ],
   controllers: [],
-  providers: [UserResolver, PrismaService, UserRepository, CryptService, CustomLogger],
+  providers: [UserResolver, PrismaService, UserRepository, CryptService, CustomLogger, EmergencyModule],
 })
 export class AppModule {}

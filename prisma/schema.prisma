@@ -35,17 +35,16 @@ model user_attendant {
 }
 
 model emergency {
-  id String @id @default(uuid())
-
-  requester        user_requester @relation(fields: [user_requesterId], references: [id])
-  attendant        user_attendant @relation(fields: [user_attendantId], references: [id])
+  id               String          @id @default(uuid())
+  requester        user_requester  @relation(fields: [user_requesterId], references: [id])
+  attendant        user_attendant? @relation(fields: [user_attendantId], references: [id])
   type             Service
   description      String
   status           Status
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
   user_requesterId String
-  user_attendantId String
+  user_attendantId String?
 }
 
 enum Service {
@@ -55,6 +54,7 @@ enum Service {
 }
 
 enum Status {
+  CREATED
   ACTIVE
   FINISHED
 }
