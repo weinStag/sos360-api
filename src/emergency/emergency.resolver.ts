@@ -3,6 +3,7 @@ import { EmergencyRepository } from './repository/emergency.repository';
 import { Query } from '@nestjs/graphql';
 import { emergencySchema } from './schema/emergency.schema';
 import { CustomLogger } from 'src/logger/custom.logger';
+import { Status } from '@prisma/client';
 
 @Resolver()
 export class EmergencyResolver {
@@ -22,6 +23,16 @@ export class EmergencyResolver {
     } catch (error) {
       this.logger.error('Error fetching all emergencies');
       throw error;
+    }
+  }
+
+  @Query(() => [emergencySchema])
+  async findEmergenciesByStatus(@Args(`status`) status: Status) {
+    try {
+      const allEmergencies = await this.emergencyRepository.findAllEmergencies();
+      return allEmergencies.filter((emergency) => emergency.status == status);
+    }catch(error) {
+      return error;
     }
   }
 
