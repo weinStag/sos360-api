@@ -5,13 +5,15 @@ import { attendantInput } from './input/attendant.input';
 import { requesterSchema } from './schema/requester.schema';
 import { requesterInput } from './input/requester.input';
 import { CustomLogger } from 'src/logger/custom.logger';
+import { CryptService } from 'src/crypt/crypt.service';
 
 @Resolver()
 export class UserResolver {
   constructor(
     private userRepository: UserRepository,
     private logger: CustomLogger,
-  ) { }
+    private crypt: CryptService,
+  ) {}
 
   // Attendants
 
@@ -65,7 +67,10 @@ export class UserResolver {
     this.logger.log(`Received request to create a new attendant: ${JSON.stringify(attendant)}`);
 
     try {
-      const newAttendant = await this.userRepository.addAttendant(attendant);
+      const newAttendant = await this.userRepository.addAttendant({
+        ...attendant,
+        password: await this.crypt.encrypt(attendant.password),
+      });
 
       this.logger.log(`Created attendant with Id ${newAttendant.id}`);
       return newAttendant;
@@ -157,7 +162,10 @@ export class UserResolver {
     this.logger.log(`Received request to add a new requester: ${JSON.stringify(requester)}`);
 
     try {
-      const newRequester = await this.userRepository.addRequester(requester);
+      const newRequester = await this.userRepository.addRequester({
+        ...requester,
+        password: await this.crypt.encrypt(requester.password),
+      });
 
       this.logger.log(`Created requester with Id ${newRequester.id}`);
       return newRequester;
