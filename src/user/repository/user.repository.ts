@@ -7,6 +7,22 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class UserRepository {
+  constructor(private readonly prisma: PrismaService) { }
+
+  async findOne(where: any) {
+    return this.prisma.user.findUnique({ where });
+  }
+
+  async update(userId: string, data: any) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data,
+    });
+  }
+}
+
+@Injectable()
+export class UserRepository {
   constructor(private readonly prismaService: PrismaService) { }
 
   // Attendants
