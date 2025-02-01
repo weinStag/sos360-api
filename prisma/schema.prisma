@@ -19,6 +19,7 @@ model user_requester {
   phone       String      @unique
   address     String
   emergencies emergency[]
+  contacts    contact[]  // add relacionamento com contatos
 
   active Boolean @default(true)
 }
@@ -36,8 +37,8 @@ model user_attendant {
 
 model emergency {
   id               String          @id @default(uuid())
-  requester        user_requester  @relation(fields: [user_requesterId], references: [id])
-  attendant        user_attendant? @relation(fields: [user_attendantId], references: [id])
+  requester        user_requester  @relation(fields: [user_requesterId], references: [id], onDelete: Cascade)
+  attendant        user_attendant? @relation(fields: [user_attendantId], references: [id], onDelete: SetNull)
   type             Service
   description      String
   status           Status
@@ -45,6 +46,17 @@ model emergency {
   updatedAt        DateTime        @updatedAt
   user_requesterId String
   user_attendantId String?
+}
+
+model contact {
+  id          String         @id @default(uuid())
+  userId      String
+  user        user_requester @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  phone       String         @unique
+  notify      Boolean        @default(true)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 }
 
 enum Service {
