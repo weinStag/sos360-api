@@ -23,6 +23,7 @@
     "prisma:db-seed": "npx prisma db seed"
   },
   "dependencies": {
+    "14": "^3.1.6",
     "@apollo/server": "^4.11.2",
     "@nestjs/apollo": "^12.2.1",
     "@nestjs/common": "^10.4.8",
