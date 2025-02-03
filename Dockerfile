@@ -1,31 +1,29 @@
-FROM node:16.20.2-alpine AS builder
+# Build
+FROM node:18-alpine as build
 
-# Create app directory
-WORKDIR /usr/app
+WORKDIR /app
 
-RUN apk add --no-cache git curl python3 make gcc libc-dev g++ libc6-compat openssl openssl-dev \
-    && curl -sL https://unpkg.com/@pnpm/self-installer | node
-RUN ln -sf python3 /usr/bin/python
+COPY package.json yarn.lock ./
 
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
+RUN yarn install --frozen-lockfile
+
+COPY . .
+
+RUN npx prisma generate
+
+RUN yarn build
+
+# Production
+FROM node:18-alpine as production
+
+WORKDIR /app
+
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/node_modules ./node_modules
 COPY package.json ./
-COPY prisma ./prisma/
 
-# Install app dependencies
-#RUN npm install -g npm@latest
-#RUN npm install --legacy-peer-deps
-RUN yarn install
+ENV NODE_ENV production
 
-COPY . ./
+EXPOSE 3000
 
-RUN npm run build
-
-FROM node:16.20.2-alpine
-
-COPY --from=builder /usr/app/node_modules ./node_modules
-COPY --from=builder /usr/app/package*.json ./
-COPY --from=builder /usr/app/dist ./dist
-COPY --from=builder /usr/app/prisma ./prisma/
-
-EXPOSE $PORT
-CMD [ "yarn", "start:migrate:prod" ]
+CMD ["node", "dist/main.js"]

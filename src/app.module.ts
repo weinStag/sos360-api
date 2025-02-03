@@ -12,9 +12,7 @@ import { CryptService } from './crypt/crypt.service';
 import { CryptModule } from './crypt/crypt.module';
 import { LoggerModule } from 'nestjs-pino';
 import { CustomLogger } from './logger/custom.logger';
-import { AuthGuard } from './auth/auth.guard';
-import { MessageModule } from './menssage/menssage.module';
-
+import { EmergencyModule } from './emergency/emergency.module';
 
 @Module({
   imports: [
@@ -22,7 +20,7 @@ import { MessageModule } from './menssage/menssage.module';
       driver: ApolloDriver,
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
-      include: [UserModule, DatabaseModule, MessageModule], 
+      include: [UserModule, DatabaseModule, EmergencyModule], 
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
     }),
@@ -32,6 +30,6 @@ import { MessageModule } from './menssage/menssage.module';
     LoggerModule.forRoot({ pinoHttp: { level: 'trace' } }),
   ],
   controllers: [],
-  providers: [UserResolver, PrismaService, UserRepository, CryptService, CustomLogger, AuthGuard],
+  providers: [UserResolver, PrismaService, UserRepository, CryptService, CustomLogger, EmergencyModule],
 })
 export class AppModule {}

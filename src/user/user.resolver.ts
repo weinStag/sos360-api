@@ -1,163 +1,205 @@
 import { UserRepository } from './repository/user.repository';
 import { Args, Query, Resolver, Mutation } from '@nestjs/graphql';
-import { userInput } from './input/user.input';
-import { userSchema } from './schema/user.schema';
-import { UserNotFoundError } from 'src/errors/user-not-found-error';
-import { DuplicatedUserError } from 'src/errors/duplicated-user-error';
-import { WrongPasswordError } from 'src/errors/wrong-password-error';
-import { CryptService } from 'src/crypt/crypt.service';
+import { attendantSchema } from './schema/attendant.schema';
+import { attendantInput } from './input/attendant.input';
+import { requesterSchema } from './schema/requester.schema';
+import { requesterInput } from './input/requester.input';
 import { CustomLogger } from 'src/logger/custom.logger';
-import { LoginResponse } from './schema/login-response.schema';
+import { CryptService } from 'src/crypt/crypt.service';
 
 @Resolver()
 export class UserResolver {
-  authService: any;
   constructor(
     private userRepository: UserRepository,
-    private crypt: CryptService,
     private logger: CustomLogger,
-  ) { }
+    private crypt: CryptService,
+  ) {}
 
-  @Query(() => userSchema)
-  async findUserByEmail(@Args('email', { type: () => String }) email: string): Promise<userSchema> {
-    this.logger.log(`Received request to find user by email: ${email}`, UserResolver.name);
+  // Attendants
+
+  @Query(() => [attendantSchema])
+  async attendants(): Promise<attendantSchema[]> {
+    this.logger.log(`Received request to find all attendants`);
 
     try {
-      const user = await this.userRepository.findByEmail(email);
-      if (!user) {
-        this.logger.warn(`User not found with email: ${email}`, UserResolver.name);
-        throw new UserNotFoundError();
-      }
-      this.logger.log(`User found: ${JSON.stringify(user)}`, UserResolver.name);
-      return user;
+      const attendants = await this.userRepository.findAllAttendants();
+      this.logger.log(`Fetched ${attendants.length} attendants`);
+
+      return attendants;
     } catch (error) {
-      this.logger.error(`Error finding user by email: ${email}`, error.stack, UserResolver.name);
+      this.logger.error('Error fetching all attendants');
       throw error;
     }
   }
 
-  @Query(() => userSchema)
-  async findUserByID(@Args('id', { type: () => String }) id: string): Promise<userSchema> {
-    this.logger.log(`Received request to find user by ID: ${id}`, UserResolver.name);
+  @Query(() => attendantSchema)
+  async findAttendantByEmail(@Args('email') email: string): Promise<attendantSchema> {
+    this.logger.log(`Received request to find attendant by email: ${email}`);
 
     try {
-      const user = await this.userRepository.findById(id);
-      if (!user) {
-        this.logger.warn(`User not found with ID: ${id}`, UserResolver.name);
-        throw new UserNotFoundError();
-      }
-      this.logger.log(`User found: ${JSON.stringify(user)}`, UserResolver.name);
-      return user;
+      const attendant = await this.userRepository.findAttendantByEmail(email);
+      this.logger.log(`Fetched attendant by email`);
+
+      return attendant;
     } catch (error) {
-      this.logger.error(`Error finding user by ID: ${id}`, error.stack, UserResolver.name);
+      this.logger.error(`Error fetching attendant by email`);
+      return error;
+    }
+  }
+
+  @Query(() => attendantSchema)
+  async findAttendantById(@Args('id') id: string): Promise<attendantSchema> {
+    this.logger.log(`Received request to find attendant by Id: ${id}`);
+
+    try {
+      const attendant = await this.userRepository.findAttendantById(id);
+
+      this.logger.log(`Fetched attendant by id`);
+      return attendant;
+    } catch (error) {
+      this.logger.error(`Error fetching attendant by id`);
+      return error;
+    }
+  }
+
+  @Mutation(() => attendantSchema)
+  async registerAttendant(@Args('attendant') attendant: attendantInput): Promise<attendantSchema> {
+    this.logger.log(`Received request to create a new attendant: ${JSON.stringify(attendant)}`);
+
+    try {
+      const newAttendant = await this.userRepository.addAttendant({
+        ...attendant,
+        password: await this.crypt.encrypt(attendant.password),
+      });
+
+      this.logger.log(`Created attendant with Id ${newAttendant.id}`);
+      return newAttendant;
+    } catch (error) {
+      this.logger.error(`Error creating new attendant.`);
       throw error;
     }
   }
 
-  @Mutation(() => userSchema)
-  async registerUser(@Args('user', { type: () => userInput }) user: userInput): Promise<void> {
-    this.logger.log(`Received request to register user: ${JSON.stringify(user)}`, UserResolver.name);
+  @Mutation(() => attendantSchema)
+  async removeAttendantByEmail(@Args('email') email: string): Promise<void> {
+    this.logger.log(`Received request to remove attendant by email: ${email}`);
 
     try {
-      if (await this.userRepository.findByEmail(user.email)) {
-        this.logger.warn(`Attempt to register duplicated user with email: ${user.email}`, UserResolver.name);
-        throw new DuplicatedUserError();
-      }
-      const encryptedPassword = await this.crypt.encrypt(user.password);
-      user.password = encryptedPassword;
-      await this.userRepository.add(user);
+      await this.userRepository.removeAttendantByEmail(email);
 
-      this.logger.log(`User registered successfully: ${user.email}`, UserResolver.name);
+      this.logger.log(`Removed attendant successfully.`);
     } catch (error) {
-      this.logger.error(`Error registering user: ${JSON.stringify(user)}`, error.stack, UserResolver.name);
+      this.logger.error(`Error removing attendant with email: ${email}`);
+      return error;
+    }
+  }
+
+  @Mutation(() => attendantSchema)
+  async removeAttendantById(@Args('id') id: string): Promise<void> {
+    this.logger.log(`Received request to remove attendant by Id: ${id}`);
+
+    try {
+      await this.userRepository.removeAttendantById(id);
+
+      this.logger.log(`Removed attendant successfully.`);
+    } catch (error) {
+      this.logger.error(`Error removing attendant with email: ${id}`);
+      return error;
+    }
+
+    return this.removeAttendantById(id);
+  }
+
+  // Requesters
+
+  @Query(() => [requesterSchema])
+  async requesters(): Promise<requesterSchema[]> {
+    this.logger.log('Received request to find all requesters');
+
+    try {
+      const requesters = await this.userRepository.findAllRequesters();
+      this.logger.log(`Fetched ${requesters.length} requesters`);
+
+      return requesters;
+    } catch (error) {
+      this.logger.error('Error fetching all requesters');
       throw error;
     }
   }
 
-  // @Query(() => userSchema)
-  // async AuthenticateUser(
-  //   @Args('email', { type: () => String }) email: string,
-  //   @Args('password', { type: () => String }) password: string,
-  // ): Promise<userSchema> {
-  //   this.logger.log(`Authentication request for user: ${email}`, UserResolver.name);
-
-  //   try {
-  //     const user = await this.userRepository.findByEmail(email);
-  //     if (!user) {
-  //       this.logger.warn(`Authentication failed: User not found for email: ${email}`, UserResolver.name);
-  //       throw new UserNotFoundError();
-  //     }
-
-  //     const isPasswordCorrect = await this.crypt.compare(password, user.password);
-  //     if (!isPasswordCorrect) {
-  //       this.logger.warn(`Authentication failed: Incorrect password for email: ${email}`, UserResolver.name);
-  //       throw new WrongPasswordError();
-  //     }
-
-  //     this.logger.log(`User authenticated successfully: ${email}`, UserResolver.name);
-  //     return user;
-  //   } catch (error) {
-  //     this.logger.error(`Error authenticating user: ${email}`, error.stack, UserResolver.name);
-  //     throw error;
-  //   }
-  // }
-
-  @Query(() => userSchema)
-  async login(
-    @Args('email', { type: () => String }) email: string,
-    @Args('password', { type: () => String }) password: string,
-  ): Promise<LoginResponse> {
-    this.logger.log(`Iniciando autenticação para o usuário: ${email}`, 'UserResolver');
-  
-    const user = await this.userRepository.findByEmail(email);
-  
-    if (!user) {
-      this.logger.warn(`Usuário não encontrado para o email: ${email}`, 'UserResolver');
-      throw new UserNotFoundError();
-    }
-  
-    const isPasswordCorrect = await this.crypt.compare(password, user.password);
-  
-    if (!isPasswordCorrect) {
-      this.logger.warn(`Senha incorreta para o email: ${email}`, 'UserResolver');
-      throw new WrongPasswordError();
-    }
-  
-    const token = this.authService.generateToken(user); 
-  
-    this.logger.log(`Usuário autenticado com sucesso: ${email}`, 'UserResolver');
-  
-    return { user, token };
-  }
-  
-
-
-  @Mutation(() => userSchema)
-  async removeUserByEmail(@Args('email', { type: () => String }) email: string): Promise<void> {
-    this.logger.log(`Received request to remove user by email: ${email}`, UserResolver.name);
+  @Query(() => requesterSchema)
+  async findRequesterByEmail(@Args('email') email: string): Promise<requesterSchema> {
+    this.logger.log(`Received request to find requester by email: ${email}`);
 
     try {
-      await this.findUserByEmail(email);
-      await this.userRepository.removeByEmail(email);
+      const requester = await this.userRepository.findRequesterByEmail(email);
+      this.logger.log(`Fetched requester by email`);
 
-      this.logger.log(`User removed successfully: ${email}`, UserResolver.name);
+      return requester;
     } catch (error) {
-      this.logger.error(`Error removing user by email: ${email}`, error.stack, UserResolver.name);
+      this.logger.error(`Error fetching requester by email`);
+      return error;
+    }
+  }
+
+  @Query(() => requesterSchema)
+  async findRequesterById(@Args('id') id: string): Promise<requesterSchema> {
+    this.logger.log(`Received request to find requester by Id: ${id}`);
+
+    try {
+      const requester = await this.userRepository.findRequesterById(id);
+      this.logger.log(`Fetched requester by id`);
+
+      return requester;
+    } catch (error) {
+      this.logger.error(`Error fetching requester by id`);
+      return error;
+    }
+  }
+
+  @Mutation(() => requesterSchema)
+  async registerRequester(@Args('requester') requester: requesterInput): Promise<requesterSchema> {
+    this.logger.log(`Received request to add a new requester: ${JSON.stringify(requester)}`);
+
+    try {
+      const newRequester = await this.userRepository.addRequester({
+        ...requester,
+        password: await this.crypt.encrypt(requester.password),
+      });
+
+      this.logger.log(`Created requester with Id ${newRequester.id}`);
+      return newRequester;
+    } catch (error) {
+      this.logger.error(`Error creating new requester.`);
       throw error;
     }
   }
 
-  @Query(() => [userSchema])
-  async listUsers(): Promise<userSchema[]> {
-    this.logger.log(`Received request to list all users`, UserResolver.name);
+  @Mutation(() => requesterSchema)
+  async removeRequesterByEmail(@Args('email') email: string): Promise<void> {
+    this.logger.log(`Received request to remove requester by email: ${email}`);
 
     try {
-      const users = await this.userRepository.list();
-      this.logger.log(`Fetched ${users.length} users`, UserResolver.name);
-      return users;
+      await this.userRepository.removeRequesterByEmail(email);
+
+      this.logger.log(`Removed requester successfully.`);
     } catch (error) {
-      this.logger.error(`Error listing users`, error.stack, UserResolver.name);
-      throw error;
+      this.logger.error(`Error removing requester with email: ${email}`);
+      return error;
+    }
+  }
+
+  @Mutation(() => requesterSchema)
+  async removeRequesterById(@Args('id') id: string): Promise<void> {
+    this.logger.log(`Received request to remove requester by Id: ${id}`);
+
+    try {
+      await this.userRepository.removeRequesterById(id);
+
+      this.logger.log(`Removed requester successfully.`);
+    } catch (error) {
+      this.logger.error(`Error removing requester with id: ${id}`);
+      return error;
     }
   }
 }

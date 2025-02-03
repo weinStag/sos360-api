@@ -1,25 +1,29 @@
-version: '3'
+version: "3.9"
 
 services:
-  SOS360DB:
-    image: 'bitnami/postgresql'
-    ports:
-      - '5432:5432'
-    volumes:
-      - './postgresql_data:/bitnami/postgresql'
-    restart: unless-stopped
-    env_file:
-      - .env
-    networks:
-      - docker-network
-
-  SOS360API:
-    working_dir: /usr/app
-    env_file:
-      - .env
+  sos360api:
     build:
       context: .
       dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - sos360db
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: yarn start:prod
 
-networks:
-  docker-network:
+  sos360db:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

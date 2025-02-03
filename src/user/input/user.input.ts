@@ -11,18 +11,9 @@ export class userInput {
   @Field({ description: 'user email' })
   email: string;
 
-  @Field({ description: 'user rg' })
-  rg: string;
-
-  @Field({ description: 'user address' })
-  address: string;
-
-  @Field({ description: 'user phone' })
-  phone: string;
+  @Field({ description: 'user password' })
+  password: string;
 
   @Field({ description: 'user active' })
   active: boolean;
-
-  @Field({ description: 'user password' })
-  password: string;
 }
