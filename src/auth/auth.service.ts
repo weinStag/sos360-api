@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../user/repository/user.repository';
 import { CryptService } from '../crypt/crypt.service';
 import { MailService } from '../mail/mail.service';
