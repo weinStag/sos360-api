@@ -11,27 +11,29 @@ datasource db {
 }
 
 model user_requester {
-  id          String      @id @default(uuid())
-  name        String
-  email       String      @unique
-  password    String
-  cpf         String      @unique
-  phone       String      @unique
-  address     String
-  emergencies emergency[]
+  id         String  @id @default(uuid())
+  name       String
+  email      String  @unique
+  password   String
+  cpf        String  @unique
+  phone      String  @unique
+  address    String
+  active     Boolean @default(true)
+  resetToken String? 
 
-  active Boolean @default(true)
+  emergencies emergency[]
 }
 
 model user_attendant {
-  id          String      @id @default(uuid())
-  name        String
-  email       String      @unique
-  password    String
-  service     Service
-  emergencies emergency[]
+  id         String  @id @default(uuid())
+  name       String
+  email      String  @unique
+  password   String
+  service    Service
+  active     Boolean @default(true)
+  resetToken String? // 🔹 Campo opcional para recuperação de senha
 
-  active Boolean @default(true)
+  emergencies emergency[]
 }
 
 model emergency {
@@ -41,8 +43,8 @@ model emergency {
   type             Service
   description      String
   status           Status
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
   user_requesterId String
   user_attendantId String?
 }
