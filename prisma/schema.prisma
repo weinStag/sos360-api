@@ -49,6 +49,15 @@ model emergency {
   user_attendantId String?
 }
 
+model urgence {
+  id String @id @default(uuid())
+  type Service
+  description String
+  status           Status
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
 enum Service {
   POLICE
   FIREMAN
