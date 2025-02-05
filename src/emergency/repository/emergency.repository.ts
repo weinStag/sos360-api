@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/service/prisma.service';
 import { emergencyInput } from '../input/emergency.input';
-import { Prisma } from '@prisma/client';
+import { Prisma, Status } from '@prisma/client';
 
 @Injectable()
 export class EmergencyRepository {
@@ -29,4 +29,13 @@ export class EmergencyRepository {
   public async removeEmergencyById(id: string) {
     return this.prismaService.emergency.delete({ where: { id } });
   }
+
+  async updateEmergencyStatus(id: string, status: Status) {
+    return this.prismaService.emergency.update({
+      where: { id },
+      data: { status },
+    });
+  }
+  
+
 }
