@@ -78,4 +78,22 @@ export class UrgencyResolver {
       throw error;
     }
   }
+
+    @Mutation(() => urgencySchema)
+    async updateUrgencyStatus(
+      @Args('id') id: string,
+      @Args('status', { type: () => Status }) status: Status
+    ) {
+      this.logger.log(`Received request to update status of emergency ${id} to ${status}`);
+      try {
+        const updatedUrgency = await this.UrgencyRepository.updateUrgencyStatus(id, status);
+        this.logger.log(`Updated emergency ${id} status to ${status}`);
+        return updatedUrgency;
+      } catch (error) {
+        this.logger.error(`Error updating status for emergency ${id}`);
+        throw error;
+      }
+    }
+
+
 }
