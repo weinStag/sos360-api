@@ -15,5 +15,5 @@ CREATE TABLE "geoLoc" (
     CONSTRAINT "geoLoc_pkey" PRIMARY KEY ("id")
 );
 
--- AddForeignKey
+-- AddForeignkey
 ALTER TABLE "geoLoc" ADD CONSTRAINT "geoLoc_emergencyId_fkey" FOREIGN KEY ("emergencyId") REFERENCES "emergency"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
