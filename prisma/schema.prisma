@@ -52,7 +52,7 @@ model geoLoc {
   createdAt   DateTime  @default(now())
   emergency   emergency @relation(fields: [emergencyId], references: [id])
   emergencyId String
-}
+}//
 
 enum Service {
   POLICE
