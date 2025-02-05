@@ -49,9 +49,10 @@ model emergency {
   user_attendantId String?
 }
 
-model urgence {
-  id String @id @default(uuid())
+model urgency {
+  id               String @id @default(uuid())
   type Service
+  attendant        user_attendant? @relation(fields: [user_attendantId], references: [id])
   description String
   status           Status
   createdAt        DateTime  @default(now())
