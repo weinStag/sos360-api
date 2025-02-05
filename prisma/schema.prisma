@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,42 +8,50 @@ datasource db {
 }
 
 model user_requester {
-  id         String  @id @default(uuid())
-  name       String
-  email      String  @unique
-  password   String
-  cpf        String  @unique
-  phone      String  @unique
-  address    String
-  active     Boolean @default(true)
-  resetToken String? 
-
+  id          String      @id @default(uuid())
+  name        String
+  email       String      @unique
+  password    String
+  cpf         String      @unique
+  phone       String      @unique
+  address     String
+  active      Boolean     @default(true)
+  resetToken  String?
   emergencies emergency[]
 }
 
 model user_attendant {
-  id         String  @id @default(uuid())
-  name       String
-  email      String  @unique
-  password   String
-  service    Service
-  active     Boolean @default(true)
-  resetToken String? // 🔹 Campo opcional para recuperação de senha
-
+  id          String      @id @default(uuid())
+  name        String
+  email       String      @unique
+  password    String
+  service     Service
+  active      Boolean     @default(true)
+  resetToken  String?
   emergencies emergency[]
 }
 
 model emergency {
   id               String          @id @default(uuid())
-  requester        user_requester  @relation(fields: [user_requesterId], references: [id])
-  attendant        user_attendant? @relation(fields: [user_attendantId], references: [id])
   type             Service
   description      String
   status           Status
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
   user_requesterId String
   user_attendantId String?
+  attendant        user_attendant? @relation(fields: [user_attendantId], references: [id])
+  requester        user_requester  @relation(fields: [user_requesterId], references: [id])
+  location         geoLoc[]
+}
+
+model geoLoc {
+  id          String    @id @default(uuid())
+  latitude    Float
+  longitude   Float
+  createdAt   DateTime  @default(now())
+  emergency   emergency @relation(fields: [emergencyId], references: [id])
+  emergencyId String
 }
 
 enum Service {
