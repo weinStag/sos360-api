@@ -10,7 +10,7 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', 
     credentials: true
   });
-  app.use(new AuthMiddleware().use);  // Aplique o middleware globalmente
+ // app.use(new AuthMiddleware().use);  // comenta essa linha Mateus
 
   await app.listen(3000);
 }
