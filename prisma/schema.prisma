@@ -18,6 +18,12 @@ model user_requester {
   active      Boolean     @default(true)
   resetToken  String?
   emergencies emergency[]
+<<<<<<< HEAD
+  contacts    contact[]  // add relacionamento com contatos
+
+  active Boolean @default(true)
+=======
+>>>>>>> cc6cf8c07de4f0b456dcc0dfb02b96f272a3adfd
 }
 
 model user_attendant {
@@ -33,6 +39,11 @@ model user_attendant {
 
 model emergency {
   id               String          @id @default(uuid())
+<<<<<<< HEAD
+  requester        user_requester  @relation(fields: [user_requesterId], references: [id], onDelete: Cascade)
+  attendant        user_attendant? @relation(fields: [user_attendantId], references: [id], onDelete: SetNull)
+=======
+>>>>>>> cc6cf8c07de4f0b456dcc0dfb02b96f272a3adfd
   type             Service
   description      String
   status           Status
@@ -45,6 +56,18 @@ model emergency {
   location         geoLoc[]
 }
 
+<<<<<<< HEAD
+model contact {
+  id          String         @id @default(uuid())
+  userId      String
+  user        user_requester @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  phone       String         @unique
+  notify      Boolean        @default(true)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+=======
 model geoLoc {
   id          String    @id @default(uuid())
   latitude    Float
@@ -53,6 +76,7 @@ model geoLoc {
   emergency   emergency @relation(fields: [emergencyId], references: [id])
   emergencyId String
 }//
+>>>>>>> cc6cf8c07de4f0b456dcc0dfb02b96f272a3adfd
 
 enum Service {
   POLICE

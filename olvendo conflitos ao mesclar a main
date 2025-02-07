@@ -1,0 +1,201 @@
+[1mdiff --git a/.env b/.env[m
+[1mindex 042a329..4343141 100644[m
+[1m--- a/.env[m
+[1m+++ b/.env[m
+[36m@@ -1,20 +1,9 @@[m
+ POSTGRESQL_USER=sosapiadmin[m
+ POSTGRESQL_PASSWORD=156736[m
+ POSTGRESQL_DB=sosapidb[m
+[31m-DATABASE_URL="postgresql://sosapiadmin:156736@localhost:5432/sosapidb?schema=public"[m
+[32m+[m[32mDATABASE_URL="postgresql://sosapiadmin:156736@sos360db:5432/sosapidb?schema=public"[m
+ LOG_RULES="context=UserModule;level=debug/level=error"[m
+ [m
+[31m-<<<<<<< HEAD[m
+[31m-[m
+[31m-[m
+[31m-# This was inserted by `prisma init`:[m
+[31m-# Environment variables declared in this file are automatically made available to Prisma.[m
+[31m-# See the documentation for more detail: https://pris.ly/d/prisma-schema#accessing-environment-variables-from-the-schema[m
+[31m-[m
+[31m-# Prisma supports the native connection string format for PostgreSQL, MySQL, SQLite, SQL Server, MongoDB and CockroachDB.[m
+[31m-# See the documentation for all the connection string options: https://pris.ly/d/connection-strings[m
+[31m-=======[m
+ # Configuração do Resend (Email)[m
+ RESEND_API_KEY=re_XEW58sSF_7gA8UuqAAb83MRzV8Mo24SVL[m
+ EMAIL_FROM=no-reply@sos360.com # Atualizar esse email após verificar o domínio no Resend[m
+[31m->>>>>>> cc6cf8c07de4f0b456dcc0dfb02b96f272a3adfd[m
+[1mdiff --git a/prisma/migrations/20250201214834_init/migration.sql b/prisma/migrations/20250201214834_init/migration.sql[m
+[1mdeleted file mode 100644[m
+[1mindex e126e95..0000000[m
+[1m--- a/prisma/migrations/20250201214834_init/migration.sql[m
+[1m+++ /dev/null[m
+[36m@@ -1,15 +0,0 @@[m
+[31m--- CreateTable[m
+[31m-CREATE TABLE "contact" ([m
+[31m-    "id" TEXT NOT NULL,[m
+[31m-    "userId" TEXT NOT NULL,[m
+[31m-    "name" TEXT NOT NULL,[m
+[31m-    "phone" TEXT NOT NULL,[m
+[31m-    "notify" BOOLEAN NOT NULL DEFAULT true,[m
+[31m-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,[m
+[31m-    "updatedAt" TIMESTAMP(3) NOT NULL,[m
+[31m-[m
+[31m-    CONSTRAINT "contact_pkey" PRIMARY KEY ("id")[m
+[31m-);[m
+[31m-[m
+[31m--- AddForeignKey[m
+[31m-ALTER TABLE "contact" ADD CONSTRAINT "contact_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user_requester"("id") ON DELETE CASCADE ON UPDATE CASCADE;[m
+[1mdiff --git a/prisma/migrations/20250201220415_add_contacts_table/migration.sql b/prisma/migrations/20250201220415_add_contacts_table/migration.sql[m
+[1mdeleted file mode 100644[m
+[1mindex b45d36d..0000000[m
+[1m--- a/prisma/migrations/20250201220415_add_contacts_table/migration.sql[m
+[1m+++ /dev/null[m
+[36m@@ -1,14 +0,0 @@[m
+[31m-/*[m
+[31m-  Warnings:[m
+[31m-[m
+[31m-  - A unique constraint covering the columns `[phone]` on the table `contact` will be added. If there are existing duplicate values, this will fail.[m
+[31m-[m
+[31m-*/[m
+[31m--- DropForeignKey[m
+[31m-ALTER TABLE "emergency" DROP CONSTRAINT "emergency_user_requesterId_fkey";[m
+[31m-[m
+[31m--- CreateIndex[m
+[31m-CREATE UNIQUE INDEX "contact_phone_key" ON "contact"("phone");[m
+[31m-[m
+[31m--- AddForeignKey[m
+[31m-ALTER TABLE "emergency" ADD CONSTRAINT "emergency_user_requesterId_fkey" FOREIGN KEY ("user_requesterId") REFERENCES "user_requester"("id") ON DELETE CASCADE ON UPDATE CASCADE;[m
+[1mdiff --git a/prisma/schema.prisma b/prisma/schema.prisma[m
+[1mindex ae6e68b..99a0fad 100644[m
+[1m--- a/prisma/schema.prisma[m
+[1m+++ b/prisma/schema.prisma[m
+[36m@@ -18,12 +18,6 @@[m [mmodel user_requester {[m
+   active      Boolean     @default(true)[m
+   resetToken  String?[m
+   emergencies emergency[][m
+[31m-<<<<<<< HEAD[m
+[31m-  contacts    contact[]  // add relacionamento com contatos[m
+[31m-[m
+[31m-  active Boolean @default(true)[m
+[31m-=======[m
+[31m->>>>>>> cc6cf8c07de4f0b456dcc0dfb02b96f272a3adfd[m
+ }[m
+ [m
+ model user_attendant {[m
+[36m@@ -39,11 +33,6 @@[m [mmodel user_attendant {[m
+ [m
+ model emergency {[m
+   id               String          @id @default(uuid())[m
+[31m-<<<<<<< HEAD[m
+[31m-  requester        user_requester  @relation(fields: [user_requesterId], references: [id], onDelete: Cascade)[m
+[31m-  attendant        user_attendant? @relation(fields: [user_attendantId], references: [id], onDelete: SetNull)[m
+[31m-=======[m
+[31m->>>>>>> cc6cf8c07de4f0b456dcc0dfb02b96f272a3adfd[m
+   type             Service[m
+   description      String[m
+   status           Status[m
+[36m@@ -56,18 +45,6 @@[m [mmodel emergency {[m
+   location         geoLoc[][m
+ }[m
+ [m
+[31m-<<<<<<< HEAD[m
+[31m-model contact {[m
+[31m-  id          String         @id @default(uuid())[m
+[31m-  userId      String[m
+[31m-  user        user_requester @relation(fields: [userId], references: [id], onDelete: Cascade)[m
+[31m-  name        String[m
+[31m-  phone       String         @unique[m
+[31m-  notify      Boolean        @default(true)[m
+[31m-  createdAt   DateTime       @default(now())[m
+[31m-  updatedAt   DateTime       @updatedAt[m
+[31m-}[m
+[31m-=======[m
+ model geoLoc {[m
+   id          String    @id @default(uuid())[m
+   latitude    Float[m
+[36m@@ -76,7 +53,6 @@[m [mmodel geoLoc {[m
+   emergency   emergency @relation(fields: [emergencyId], references: [id])[m
+   emergencyId String[m
+ }//[m
+[31m->>>>>>> cc6cf8c07de4f0b456dcc0dfb02b96f272a3adfd[m
+ [m
+ enum Service {[m
+   POLICE[m
+[1mdiff --git a/src/main.ts b/src/main.ts[m
+[1mindex 8275df9..782aed6 100644[m
+[1m--- a/src/main.ts[m
+[1m+++ b/src/main.ts[m
+[36m@@ -6,7 +6,7 @@[m [mimport { AuthMiddleware } from './auth/auth.middleware';[m
+ async function bootstrap() {[m
+   const app = await NestFactory.create(AppModule);[m
+ [m
+[31m-  // app.use(new AuthMiddleware().use);  // Aplique o middleware globalmente[m
+[32m+[m[32m  app.use(new AuthMiddleware().use);  // Aplique o middleware globalmente[m
+ [m
+   await app.listen(3000);[m
+ }[m
+[1mdiff --git a/src/schema.gql b/src/schema.gql[m
+[1mindex 21f19fa..1e0811d 100644[m
+[1m--- a/src/schema.gql[m
+[1m+++ b/src/schema.gql[m
+[36m@@ -2,30 +2,7 @@[m
+ # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)[m
+ # ------------------------------------------------------[m
+ [m
+[31m-type Contact {[m
+[31m-  createdAt: DateTime![m
+[31m-  id: String![m
+[31m-  name: String![m
+[31m-  notify: Boolean![m
+[31m-  phone: String![m
+[31m-  updatedAt: DateTime![m
+[31m-  userId: String![m
+[31m-}[m
+[31m-[m
+[31m-input CreateContactInput {[m
+[31m-  name: String![m
+[31m-  notify: Boolean! = true[m
+[31m-  phone: String![m
+[31m-  userId: String![m
+[31m-}[m
+[31m-[m
+[31m-"""[m
+[31m-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.[m
+[31m-"""[m
+[31m-scalar DateTime[m
+[31m-[m
+ type Mutation {[m
+[31m-  createContact(data: CreateContactInput!): Contact![m
+   registerAttendant(attendant: attendantInput!): attendantSchema![m
+   registerRequester(requester: requesterInput!): requesterSchema![m
+   removeAttendantByEmail(email: String!): attendantSchema![m
+[36m@@ -40,7 +17,6 @@[m [mtype Query {[m
+   findAttendantById(id: String!): attendantSchema![m
+   findRequesterByEmail(email: String!): requesterSchema![m
+   findRequesterById(id: String!): requesterSchema![m
+[31m-  getContacts: [Contact!]![m
+   requesters: [requesterSchema!]![m
+ }[m
+ [m
+[1mdiff --git a/src/user/contact.resolver.ts b/src/user/contact.resolver.ts[m
+[1mdeleted file mode 100644[m
+[1mindex 473d57e..0000000[m
+[1m--- a/src/user/contact.resolver.ts[m
+[1m+++ /dev/null[m
+[36m@@ -1,21 +0,0 @@[m
+[31m-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';[m
+[31m-import { ContactService } from 'src/user/contact.service';[m
+[31m-import { Contact } from 'src/user/schema/contact.schema';[m
+[31m-import { CreateContactInput } from 'src/user/input/create-contact.input';[m
+[31m-[m
+[31m-[m
+[31m-@Resolver(() => Contact)[m
+[31m-export class ContactResolver {[m
+[31m-  constructor(private readonly contactService: ContactService) {}[m
+[31m-[m
+[31m-  @Query(() => [Contact])[m
+[31m-  async getContacts() {[m
+[31m-    return this.contactService.findAll();[m
+[31m-  }[m
+[31m-[m
+[31m- 
