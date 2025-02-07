@@ -7,23 +7,23 @@ import { CreateContactInput } from "src/user/input/create-contact.input";
 export class ContactService {
   constructor(private prisma: PrismaService) {}
 
-  async createContact(data: CreateContactInput): Promise<Contact> {
+  async create(data: CreateContactInput): Promise<Contact> {
     return await this.prisma.contact.create({ data });
   }
 
-  async getContacts(): Promise<Contact[]> {
+  async findAll(): Promise<Contact[]> {
     return await this.prisma.contact.findMany();
   }
 
-  async getContactById(id: string): Promise<Contact | null> {
+  async findById(id: string): Promise<Contact | null> {
     return await this.prisma.contact.findUnique({ where: { id } });
   }
 
-  async updateContact(id: string, data: Partial<Contact>): Promise<Contact> {
+  async update(id: string, data: Partial<Contact>): Promise<Contact> {
     return await this.prisma.contact.update({ where: { id }, data });
   }
 
-  async deleteContact(id: string): Promise<Contact> {
+  async delete(id: string): Promise<Contact> {
     return await this.prisma.contact.delete({ where: { id } });
   }
 }
