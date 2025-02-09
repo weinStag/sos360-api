@@ -15,13 +15,13 @@ export class UserRepository {
     return this.prismaService.user_attendant.findMany();
   }
 
-  public async findAttendantByEmail(email: string): Promise<attendantSchema> {
+  public async findAttendantByEmail(email: string): Promise<attendantSchema | null> {
     return this.prismaService.user_attendant.findUnique({
       where: { email },
     });
   }
 
-  public async findAttendantById(id: string): Promise<attendantSchema> {
+  public async findAttendantById(id: string): Promise<attendantSchema | null> {
     return this.prismaService.user_attendant.findUnique({
       where: { id },
     });
@@ -32,11 +32,11 @@ export class UserRepository {
   }
 
   public async removeAttendantByEmail(email: string): Promise<void> {
-    this.prismaService.user_attendant.delete({ where: { email } });
+    await this.prismaService.user_attendant.delete({ where: { email } });
   }
 
   public async removeAttendantById(id: string): Promise<void> {
-    this.prismaService.user_attendant.delete({ where: { id } });
+    await this.prismaService.user_attendant.delete({ where: { id } });
   }
 
   // Requesters
@@ -45,13 +45,13 @@ export class UserRepository {
     return this.prismaService.user_requester.findMany();
   }
 
-  public async findRequesterByEmail(email: string): Promise<requesterSchema> {
+  public async findRequesterByEmail(email: string): Promise<requesterSchema | null> {
     return this.prismaService.user_requester.findUnique({
       where: { email },
     });
   }
 
-  public async findRequesterById(id: string): Promise<requesterSchema> {
+  public async findRequesterById(id: string): Promise<requesterSchema | null> {
     return this.prismaService.user_requester.findUnique({
       where: { id },
     });
@@ -62,10 +62,58 @@ export class UserRepository {
   }
 
   public async removeRequesterByEmail(email: string): Promise<void> {
-    this.prismaService.user_requester.delete({ where: { email } });
+    await this.prismaService.user_requester.delete({ where: { email } });
   }
 
   public async removeRequesterById(id: string): Promise<void> {
-    this.prismaService.user_requester.delete({ where: { id } });
+    await this.prismaService.user_requester.delete({ where: { id } });
+  }
+
+  // 🔹 Adicionado suporte à redefinição de senha
+
+  /**
+   * 🔎 Busca um usuário (attendant ou requester) pelo email
+   */
+  public async findOneByEmail(email: string): Promise<attendantSchema | requesterSchema | null> {
+    const attendant = await this.findAttendantByEmail(email);
+    if (attendant) return attendant;
+
+    return await this.findRequesterByEmail(email);
+  }
+
+  public async findUserByResetToken(resetToken: string): Promise<attendantSchema | requesterSchema | null> {
+    const attendant = await this.prismaService.user_attendant.findFirst({
+      where: { resetToken },
+    });
+
+    if (attendant) return attendant;
+
+    return this.prismaService.user_requester.findFirst({
+      where: { resetToken },
+    });
+  }
+
+  public async updateResetToken(email: string, resetToken: string | null): Promise<void> {
+    await this.prismaService.user_attendant.updateMany({
+      where: { email },
+      data: { resetToken },
+    });
+
+    await this.prismaService.user_requester.updateMany({
+      where: { email },
+      data: { resetToken },
+    });
+  }
+
+  public async updatePassword(userId: string, hashedPassword: string): Promise<void> {
+    await this.prismaService.user_attendant.updateMany({
+      where: { id: userId },
+      data: { password: hashedPassword, resetToken: null },
+    });
+
+    await this.prismaService.user_requester.updateMany({
+      where: { id: userId },
+      data: { password: hashedPassword, resetToken: null },
+    });
   }
 }
