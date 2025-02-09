@@ -13,6 +13,8 @@ export class AuthService {
         private readonly mailService: MailService,
     ) {}
 
+    private readonly jwtSecret = 'your_jwt_secret';
+
     /**
      * 🔹 Recuperação de Senha: Gera um token e envia um email com o link de redefinição.
      */
@@ -58,7 +60,9 @@ export class AuthService {
         await this.userRepository.updatePassword(user.id, hashedPassword);
     }
 
-    private readonly jwtSecret = 'your_jwt_secret';
+    
+
+
 
   generateToken(user: any): string {
     const payload = { userId: user.id };
