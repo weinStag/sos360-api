@@ -13,6 +13,7 @@ import { CryptModule } from './crypt/crypt.module';
 import { LoggerModule } from 'nestjs-pino';
 import { CustomLogger } from './logger/custom.logger';
 import { EmergencyModule } from './emergency/emergency.module';
+import { MediaModule } from './media/media.module'; // <-- Adicionado aqui
 
 @Module({
   imports: [
@@ -23,14 +24,15 @@ import { EmergencyModule } from './emergency/emergency.module';
       include: [UserModule, DatabaseModule],
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
-      // typePaths: ['./**/*.graphql'],
     }),
     UserModule,
     DatabaseModule,
     CryptModule,
-    LoggerModule.forRoot({pinoHttp : {level: 'trace'}}),
+    LoggerModule.forRoot({ pinoHttp: { level: 'trace' } }),
+    EmergencyModule,
+    MediaModule, // <-- Adicionado no array de imports
   ],
   controllers: [],
-  providers: [UserResolver, PrismaService, UserRepository, CryptService, CustomLogger, EmergencyModule],
+  providers: [UserResolver, PrismaService, UserRepository, CryptService, CustomLogger],
 })
 export class AppModule {}
