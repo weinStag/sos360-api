@@ -23,14 +23,15 @@ import { EmergencyModule } from './emergency/emergency.module';
       include: [UserModule, DatabaseModule],
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
+      context: ({ req }) => ({ req }),
       // typePaths: ['./**/*.graphql'],
     }),
     UserModule,
     DatabaseModule,
     CryptModule,
-    LoggerModule.forRoot({pinoHttp : {level: 'trace'}}),
+    LoggerModule.forRoot({ pinoHttp: { level: 'trace' } }),
   ],
   controllers: [],
   providers: [UserResolver, PrismaService, UserRepository, CryptService, CustomLogger, EmergencyModule],
 })
-export class AppModule {}
+export class AppModule { }
