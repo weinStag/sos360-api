@@ -20,5 +20,8 @@ export class emergencyInput {
 
   @Field(() => Status, { defaultValue: Status.CREATED })
   status: Status;
+
+  @Field()
+  localizationId?: string;
 }
 

@@ -20,6 +20,7 @@ export class EmergencyRepository {
       type: emergency.type,
       description: emergency.description,
       status: emergency.status,
+      location: { connect: { id: emergency.localizationId } },
       requester: { connect: { id: emergency.requesterId } }
     }
 
