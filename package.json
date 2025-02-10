@@ -6,6 +6,9 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "dev:db:start": "docker compose up sos360db -d",
+    "dev:db:stop": "docker compose rm sos360db -s -f -v",
+    "dev:db:restart": "docker compose rm sos360db -s -f -v && docker compose up sos360db -d",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
