@@ -4,6 +4,8 @@ import { Query } from '@nestjs/graphql';
 import { emergencySchema } from './schema/emergency.schema';
 import { CustomLogger } from 'src/logger/custom.logger';
 import { Status } from '@prisma/client';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 
 @Resolver()
 export class EmergencyResolver {
@@ -12,6 +14,7 @@ export class EmergencyResolver {
     private logger: CustomLogger,
   ) { }
 
+  @UseGuards(GqlAuthGuard)
   @Query(() => [emergencySchema])
   async emergencies() {
     this.logger.log('Received request to find all emergencies')
@@ -26,6 +29,7 @@ export class EmergencyResolver {
     }
   }
 
+  @UseGuards(GqlAuthGuard)
   @Query(() => [emergencySchema])
   async findEmergenciesByStatus(@Args(`status`) status: Status) {
     try {
@@ -36,6 +40,7 @@ export class EmergencyResolver {
     }
   }
 
+  @UseGuards(GqlAuthGuard)
   @Query(() => emergencySchema)
   async findEmergencyById(@Args('id') id: string) {
     this.logger.log('Received request to find a emergency by Id')
@@ -50,6 +55,7 @@ export class EmergencyResolver {
     }
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => emergencySchema)
   async createEmergency(@Args('emergency') emergency: emergencySchema) {
     this.logger.log('Received request to create a new emergency');
@@ -64,6 +70,7 @@ export class EmergencyResolver {
     }
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => emergencySchema)
   async removeEmergencyById(@Args('id') id: string) {
     this.logger.log('Received request to remove a emergency by id');

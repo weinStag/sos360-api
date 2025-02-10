@@ -6,6 +6,8 @@ import { requesterSchema } from './schema/requester.schema';
 import { requesterInput } from './input/requester.input';
 import { CustomLogger } from 'src/logger/custom.logger';
 import { CryptService } from 'src/crypt/crypt.service';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 
 @Resolver()
 export class UserResolver {
@@ -17,6 +19,7 @@ export class UserResolver {
 
   // Attendants
 
+  @UseGuards(GqlAuthGuard)
   @Query(() => [attendantSchema])
   async attendants(): Promise<attendantSchema[]> {
     this.logger.log(`Received request to find all attendants`);
@@ -32,6 +35,7 @@ export class UserResolver {
     }
   }
 
+  @UseGuards(GqlAuthGuard)
   @Query(() => attendantSchema)
   async findAttendantByEmail(@Args('email') email: string): Promise<attendantSchema> {
     this.logger.log(`Received request to find attendant by email: ${email}`);
@@ -47,6 +51,7 @@ export class UserResolver {
     }
   }
 
+  @UseGuards(GqlAuthGuard)
   @Query(() => attendantSchema)
   async findAttendantById(@Args('id') id: string): Promise<attendantSchema> {
     this.logger.log(`Received request to find attendant by Id: ${id}`);
@@ -80,6 +85,7 @@ export class UserResolver {
     }
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => attendantSchema)
   async removeAttendantByEmail(@Args('email') email: string): Promise<void> {
     this.logger.log(`Received request to remove attendant by email: ${email}`);
@@ -94,6 +100,7 @@ export class UserResolver {
     }
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => attendantSchema)
   async removeAttendantById(@Args('id') id: string): Promise<void> {
     this.logger.log(`Received request to remove attendant by Id: ${id}`);
@@ -112,6 +119,7 @@ export class UserResolver {
 
   // Requesters
 
+  @UseGuards(GqlAuthGuard)
   @Query(() => [requesterSchema])
   async requesters(): Promise<requesterSchema[]> {
     this.logger.log('Received request to find all requesters');
@@ -127,6 +135,7 @@ export class UserResolver {
     }
   }
 
+  @UseGuards(GqlAuthGuard)
   @Query(() => requesterSchema)
   async findRequesterByEmail(@Args('email') email: string): Promise<requesterSchema> {
     this.logger.log(`Received request to find requester by email: ${email}`);
@@ -142,6 +151,7 @@ export class UserResolver {
     }
   }
 
+  @UseGuards(GqlAuthGuard)
   @Query(() => requesterSchema)
   async findRequesterById(@Args('id') id: string): Promise<requesterSchema> {
     this.logger.log(`Received request to find requester by Id: ${id}`);
@@ -175,6 +185,7 @@ export class UserResolver {
     }
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => requesterSchema)
   async removeRequesterByEmail(@Args('email') email: string): Promise<void> {
     this.logger.log(`Received request to remove requester by email: ${email}`);
@@ -189,6 +200,7 @@ export class UserResolver {
     }
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => requesterSchema)
   async removeRequesterById(@Args('id') id: string): Promise<void> {
     this.logger.log(`Received request to remove requester by Id: ${id}`);
