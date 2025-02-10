@@ -42,17 +42,16 @@ model emergency {
   user_attendantId String?
   attendant        user_attendant? @relation(fields: [user_attendantId], references: [id])
   requester        user_requester  @relation(fields: [user_requesterId], references: [id])
-  location         geoLoc[]
+  location         geoLoc          @relation(fields: [geoLocId], references: [id])
+  geoLocId         String
 }
 
 model geoLoc {
-  id          String    @id @default(uuid())
-  latitude    Float
-  longitude   Float
-  createdAt   DateTime  @default(now())
-  emergency   emergency @relation(fields: [emergencyId], references: [id])
-  emergencyId String
-}//
+  id        String      @id @default(uuid())
+  latitude  Float
+  longitude Float
+  emergency emergency[]
+}
 
 enum Service {
   POLICE
