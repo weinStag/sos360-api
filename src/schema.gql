@@ -3,12 +3,17 @@
 # ------------------------------------------------------
 
 type Mutation {
+  login(email: String!, password: String!): String!
   registerAttendant(attendant: attendantInput!): attendantSchema!
   registerRequester(requester: requesterInput!): requesterSchema!
   removeAttendantByEmail(email: String!): attendantSchema!
   removeAttendantById(id: String!): attendantSchema!
   removeRequesterByEmail(email: String!): requesterSchema!
   removeRequesterById(id: String!): requesterSchema!
+  updateAttendantByEmail(data: updateUser!, email: String!): attendantSchema!
+  updateAttendantById(data: updateUser!, id: String!): attendantSchema!
+  updateRequesterByEmail(data: updateRequester!, email: String!): requesterSchema!
+  updateRequesterById(data: updateRequester!, id: String!): requesterSchema!
 }
 
 type Query {
@@ -110,4 +115,16 @@ type requesterSchema {
 
   """requester phone"""
   phone: String!
+}
+
+input updateRequester {
+  address: String
+  email: String
+  name: String
+  phone: String
+}
+
+input updateUser {
+  email: String
+  name: String
 }

@@ -7,5 +7,6 @@ import { CustomLogger } from 'src/logger/custom.logger';
 
 @Module({
   providers: [UserResolver, PrismaService, UserRepository, CryptService, CustomLogger],
+  exports: [UserRepository],
 })
 export class UserModule {}

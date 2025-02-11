@@ -4,6 +4,8 @@ import { attendantSchema } from '../schema/attendant.schema';
 import { requesterSchema } from '../schema/requester.schema';
 import { PrismaService } from './../../database/service/prisma.service';
 import { Injectable } from '@nestjs/common';
+import { updateUser } from '../input/update-user.input';
+import { updateRequester } from '../input/update-requester.input';
 
 @Injectable()
 export class UserRepository {
@@ -32,11 +34,19 @@ export class UserRepository {
   }
 
   public async removeAttendantByEmail(email: string): Promise<void> {
-    await this.prismaService.user_attendant.delete({ where: { email } });
+    this.prismaService.user_attendant.delete({ where: { email } });
   }
 
   public async removeAttendantById(id: string): Promise<void> {
-    await this.prismaService.user_attendant.delete({ where: { id } });
+    this.prismaService.user_attendant.delete({ where: { id } });
+  }
+
+  public async updateAttendantByEmail(email: string, newData: updateUser): Promise<attendantSchema> {
+    return this.prismaService.user_attendant.update({ where: { email }, data: newData });
+  }
+
+  public async updateAttendantById(id: string, newData: updateUser): Promise<attendantSchema> {
+    return this.prismaService.user_attendant.update({ where: { id }, data: newData });
   }
 
   // Requesters
@@ -62,11 +72,19 @@ export class UserRepository {
   }
 
   public async removeRequesterByEmail(email: string): Promise<void> {
-    await this.prismaService.user_requester.delete({ where: { email } });
+    this.prismaService.user_requester.delete({ where: { email } });
   }
 
   public async removeRequesterById(id: string): Promise<void> {
-    await this.prismaService.user_requester.delete({ where: { id } });
+    this.prismaService.user_requester.delete({ where: { id } });
+  }
+
+  public async updateRequesterByEmail(email: string, newData: updateRequester): Promise<requesterSchema> {
+    return this.prismaService.user_requester.update({ where: { email }, data: newData });
+  }
+
+  public async updateRequesterById(id: string, newData: updateRequester): Promise<requesterSchema> {
+    return this.prismaService.user_requester.update({ where: { id }, data: newData });
   }
 
   // 🔹 Adicionado suporte à redefinição de senha

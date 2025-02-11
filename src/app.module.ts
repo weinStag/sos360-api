@@ -13,6 +13,7 @@ import { CryptModule } from './crypt/crypt.module';
 import { LoggerModule } from 'nestjs-pino';
 import { CustomLogger } from './logger/custom.logger';
 import { EmergencyModule } from './emergency/emergency.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -20,18 +21,17 @@ import { EmergencyModule } from './emergency/emergency.module';
       driver: ApolloDriver,
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
-      include: [UserModule, DatabaseModule],
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
       context: ({ req }) => ({ req }),
-      // typePaths: ['./**/*.graphql'],
     }),
     UserModule,
     DatabaseModule,
     CryptModule,
+    AuthModule,
     LoggerModule.forRoot({ pinoHttp: { level: 'trace' } }),
   ],
   controllers: [],
-  providers: [UserResolver, PrismaService, UserRepository, CryptService, CustomLogger, EmergencyModule],
+  providers: [UserResolver, PrismaService, UserRepository, CryptService, CustomLogger, EmergencyModule, AuthModule],
 })
 export class AppModule { }

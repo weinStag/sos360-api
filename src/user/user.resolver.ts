@@ -8,6 +8,8 @@ import { CustomLogger } from 'src/logger/custom.logger';
 import { CryptService } from 'src/crypt/crypt.service';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
+import { updateUser } from './input/update-user.input';
+import { updateRequester } from './input/update-requester.input';
 
 @Resolver()
 export class UserResolver {
@@ -15,7 +17,7 @@ export class UserResolver {
     private userRepository: UserRepository,
     private logger: CustomLogger,
     private crypt: CryptService,
-  ) {}
+  ) { }
 
   // Attendants
 
@@ -117,6 +119,36 @@ export class UserResolver {
     return this.removeAttendantById(id);
   }
 
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => attendantSchema)
+  async updateAttendantByEmail(
+    @Args('email') attendantEmail: string,
+    @Args('data') newData: updateUser,
+  ): Promise<attendantSchema> {
+    try {
+      const updatedAttendant = this.userRepository.updateAttendantByEmail(attendantEmail, newData);
+
+      return updatedAttendant;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => attendantSchema)
+  async updateAttendantById(
+    @Args('id') attendantId: string,
+    @Args('data') newData: updateUser,
+  ): Promise<attendantSchema> {
+    try {
+      const updatedAttendant = this.userRepository.updateAttendantById(attendantId, newData);
+
+      return updatedAttendant;
+    } catch (error) {
+      return error;
+    }
+  }
+
   // Requesters
 
   @UseGuards(GqlAuthGuard)
@@ -211,6 +243,36 @@ export class UserResolver {
       this.logger.log(`Removed requester successfully.`);
     } catch (error) {
       this.logger.error(`Error removing requester with id: ${id}`);
+      return error;
+    }
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => requesterSchema)
+  async updateRequesterByEmail(
+    @Args('email') requesterEmail: string,
+    @Args('data') newData: updateRequester,
+  ): Promise<requesterSchema> {
+    try {
+      const updatedRequester = this.userRepository.updateRequesterById(requesterEmail, newData);
+
+      return updatedRequester;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => requesterSchema)
+  async updateRequesterById(
+    @Args('id') requesterId: string,
+    @Args('data') newData: updateRequester,
+  ): Promise<requesterSchema> {
+    try {
+      const updatedRequester = this.userRepository.updateRequesterById(requesterId, newData);
+
+      return updatedRequester;
+    } catch (error) {
       return error;
     }
   }
