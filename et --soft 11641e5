@@ -1,0 +1,35 @@
+[33m22c2dff[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mAddLocalization[m[33m)[m add modulos localization
+[33m8d011cb[m add modulos localization
+[33m11641e5[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m Adiciona CRUD para gerenciamento de contatos de emergência (#8)
+[33mcc6cf8c[m Geolocalization Basic Functionality
+[33m853b5dd[m Implementação de mudança de senha  (#6)
+[33md3e7d92[m Merge pull request #4 from joao-zip/main
+[33m5904872[m Delete .github/workflows/node.js.yml
+[33m57e2da5[m Create docker-image.yml
+[33md6e056a[m Create node.js.yml
+[33m964c35b[m added: query to find emergencies by status
+[33ma091467[m added: crypt service in user resolver
+[33m29d1d63[m docker again
+[33mc49a6e8[m added: basic logging to emergency
+[33mf278fed[m changed: db env variable
+[33m8db3a0b[m added: emergency module
+[33m4543106[m removed: azure workflow
+[33mc8ef621[m added: logging into user resolver
+[33mff5b9ad[m[33m ([m[1;31morigin/general_rewrite[m[33m)[m removed: menssage module
+[33m93c0847[m fixed: dockerfile and docker-compose organized to work correctly
+[33mf21d3fd[m changed: complete rewrite of user module with basic functionality
+[33mc094097[m changed: base db schemas
+[33m5c28e5b[m Create azure-container-webapp.yml
+[33m0c978c5[m changed: dockerfile and docker-compose to run
+[33m876d889[m Merge pull request #2 from KohatsuRK/main
+[33mc1ec11a[m Merge branch 'weinStag:main' into main
+[33mcac3a27[m Autenticadores, Código JWT
+[33m217ca31[m adicionando logg ao login
+[33m822d50b[m criação de protocolos e atualização no loggin/autenticador usuario
+[33m86645a5[m Merge pull request #1 from KohatsuRK/main
+[33m507b9a1[m feat: criacação do Schema emergency
+[33m75b9dbe[m feat: implementacao do custtomlogger no userResolver
+[33m03159a7[m feat: logger custom
+[33m39c0437[m init + user
+[33m57665cb[m init + user
+[33m3a7eafc[m Initial commit
