@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { UserRepository } from '../user/repository/user.repository';
 import { CryptService } from '../crypt/crypt.service';
@@ -14,6 +14,56 @@ export class AuthService {
     ) {}
 
     private readonly jwtSecret = 'your_jwt_secret';
+
+    async signUpRequester(
+      name: string,
+      email: string,
+      password: string,
+      cpf: string,
+      phone: string,
+      address: string,
+    ): Promise<void> {
+      try {
+        // Verifica se o e-mail já está em uso
+        const existingUser = await this.userRepository.findOneByEmail(email);
+        if (existingUser) {
+          throw new BadRequestException('Email already in use');
+        }
+  
+        // Hash da senha
+        const hashedPassword = await this.cryptService.encrypt(password);
+  
+        // Criação do usuário
+        const requester = {
+          name,
+          email,
+          password: hashedPassword,
+          active: true,
+          cpf,
+          phone,
+          address,
+        };
+  
+        
+        await this.userRepository.addRequester(requester);
+      } catch (error) {
+        throw new BadRequestException(error.message || 'Error signing up requester');
+      }
+    }
+
+    generateToken(user: any): string {
+      const payload = { userId: user.id };
+      return jwt.sign(payload, this.jwtSecret, { expiresIn: '1h' });
+    }
+  
+    validateToken(token: string) {
+      try {
+        return jwt.verify(token, this.jwtSecret);
+      } catch (err) {
+        throw new Error('Invalid token');
+      }
+    }
+  
 
     /**
      * 🔹 Recuperação de Senha: Gera um token e envia um email com o link de redefinição.
@@ -60,21 +110,6 @@ export class AuthService {
         await this.userRepository.updatePassword(user.id, hashedPassword);
     }
 
-    
-
-
-
-  generateToken(user: any): string {
-    const payload = { userId: user.id };
-    return jwt.sign(payload, this.jwtSecret, { expiresIn: '1h' });
-  }
-
-  validateToken(token: string) {
-    try {
-      return jwt.verify(token, this.jwtSecret);
-    } catch (err) {
-      throw new Error('Invalid token');
-    }
-  }
-
+   
+  
 }
