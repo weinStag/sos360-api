@@ -31,7 +31,7 @@ export class EmergencyResolver {
     try {
       const allEmergencies = await this.emergencyRepository.findAllEmergencies();
       return allEmergencies.filter((emergency) => emergency.status == status);
-    }catch(error) {
+    } catch (error) {
       return error;
     }
   }
@@ -77,4 +77,23 @@ export class EmergencyResolver {
       throw error;
     }
   }
+
+  @Mutation(() => emergencySchema)
+  async updateEmergencyStatus(
+    @Args('id') id: string,
+    @Args('status', { type: () => Status }) status: Status
+  ) {
+    this.logger.log(`Received request to update status of emergency ${id} to ${status}`);
+    try {
+      const updatedEmergency = await this.emergencyRepository.updateEmergencyStatus(id, status);
+      this.logger.log(`Updated emergency ${id} status to ${status}`);
+      return updatedEmergency;
+    } catch (error) {
+      this.logger.error(`Error updating status for emergency ${id}`);
+      throw error;
+    }
+  }
+
+
+
 }
