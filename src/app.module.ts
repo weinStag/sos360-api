@@ -13,7 +13,7 @@ import { CryptModule } from './crypt/crypt.module';
 import { LoggerModule } from 'nestjs-pino';
 import { CustomLogger } from './logger/custom.logger';
 import { EmergencyModule } from './emergency/emergency.module';
-import { LocalizationModule } from './localization/localization.module';
+import { LocalizationModule } from './geoLoc/geoLoc.module';
 
 @Module({
   imports: [

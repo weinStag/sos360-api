@@ -43,7 +43,8 @@ model emergency {
   updatedAt        DateTime        @updatedAt
   user_requesterId String
   user_attendantId String?
-  location         Localization[]
+  location         geoLoc          @relation(fields: [geoLocId], references: [id])
+  geoLocId         String
 }
 
 model contact {
@@ -58,13 +59,11 @@ model contact {
 }
 
 
-model Localization {
-  id          String    @id @default(uuid())
-  latitude    Float
-  longitude   Float
-  createdAt   DateTime  @default(now())
-  emergency   emergency @relation(fields: [emergencyId], references: [id])
-  emergencyId String
+model geoLoc {
+  id        String      @id @default(uuid())
+  latitude  Float
+  longitude Float
+  emergency emergency[]
 }
 
 
