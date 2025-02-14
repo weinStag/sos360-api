@@ -4,6 +4,8 @@ import { attendantSchema } from '../schema/attendant.schema';
 import { requesterSchema } from '../schema/requester.schema';
 import { PrismaService } from './../../database/service/prisma.service';
 import { Injectable } from '@nestjs/common';
+import { updateUser } from '../input/update-user.input';
+import { updateRequester } from '../input/update-requester.input';
 
 @Injectable()
 export class UserRepository {
@@ -116,4 +118,20 @@ export class UserRepository {
       data: { password: hashedPassword, resetToken: null },
     });
   }
+
+  public async updateAttendantByEmail(email: string, newData: updateUser): Promise<attendantSchema> {
+    return this.prismaService.user_attendant.update({ where: { email }, data: newData });
+  }
+  public async updateAttendantById(id: string, newData: updateUser): Promise<attendantSchema> {
+    return this.prismaService.user_attendant.update({ where: { id }, data: newData });
+  }
+
+  public async updateRequesterByEmail(email: string, newData: updateRequester): Promise<requesterSchema> {
+    return this.prismaService.user_requester.update({ where: { email }, data: newData });
+  }
+  public async updateRequesterById(id: string, newData: updateRequester): Promise<requesterSchema> {
+    return this.prismaService.user_requester.update({ where: { id }, data: newData });
+  }
+
+
 }

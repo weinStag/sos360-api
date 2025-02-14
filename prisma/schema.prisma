@@ -18,12 +18,9 @@ model user_requester {
   active      Boolean     @default(true)
   resetToken  String?
   emergencies emergency[]
-<<<<<<< HEAD
   contacts    contact[]  // add relacionamento com contatos
 
   active Boolean @default(true)
-=======
->>>>>>> cc6cf8c07de4f0b456dcc0dfb02b96f272a3adfd
 }
 
 model user_attendant {
@@ -39,11 +36,8 @@ model user_attendant {
 
 model emergency {
   id               String          @id @default(uuid())
-<<<<<<< HEAD
   requester        user_requester  @relation(fields: [user_requesterId], references: [id], onDelete: Cascade)
   attendant        user_attendant? @relation(fields: [user_attendantId], references: [id], onDelete: SetNull)
-=======
->>>>>>> cc6cf8c07de4f0b456dcc0dfb02b96f272a3adfd
   type             Service
   description      String
   status           Status
@@ -51,12 +45,21 @@ model emergency {
   updatedAt        DateTime        @updatedAt
   user_requesterId String
   user_attendantId String?
-  attendant        user_attendant? @relation(fields: [user_attendantId], references: [id])
-  requester        user_requester  @relation(fields: [user_requesterId], references: [id])
   location         geoLoc[]
 }
 
-<<<<<<< HEAD
+model urgency {
+  id               String @id @default(uuid())
+  type Service
+  attendant        user_attendant? @relation(fields: [user_attendantId], references: [id], onDelete: SetNull)
+  description String
+  status           Status
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  user_attendantId String?
+}
+
+
 model contact {
   id          String         @id @default(uuid())
   userId      String
@@ -67,7 +70,7 @@ model contact {
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 }
-=======
+
 model geoLoc {
   id          String    @id @default(uuid())
   latitude    Float
@@ -75,8 +78,8 @@ model geoLoc {
   createdAt   DateTime  @default(now())
   emergency   emergency @relation(fields: [emergencyId], references: [id])
   emergencyId String
-}//
->>>>>>> cc6cf8c07de4f0b456dcc0dfb02b96f272a3adfd
+}
+
 
 enum Service {
   POLICE
