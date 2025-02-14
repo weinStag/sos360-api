@@ -18,5 +18,6 @@ import { ContactResolver } from 'src/user/contact.resolver';
     ContactResolver,  
     ContactService,
   ],
+  exports: [UserRepository],
 })
 export class UserModule {}
