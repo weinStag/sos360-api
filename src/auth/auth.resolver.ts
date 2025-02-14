@@ -26,51 +26,9 @@ export class AuthResolver {
       throw new BadRequestException(error.message || 'Error signing up requester');
     }
   }
-
-  @Mutation(() => attendantSchema)
-  async signUpAttndant(
-    @Args('name') name: string,
-    @Args('email') email: string,
-    @Args('password') password: string,
-    @Args('service') service: string,
-    @Args('phone') phone: string,
-    @Args('address') address: string,
-  ): Promise<attendantSchema> {
-    try {
-      // Chama o serviço para registrar o atendente
-      const newAttendant = await this.authService.signUpAttendant({
-        name,
-        email,
-        password,
-        service,
-        phone,
-        address,
-      });
-
-      // Retorna o atendente com os dados cadastrados
-      return newAttendant;
-    } catch (error) {
-      throw new BadRequestException(error.message || 'Error signing up attendant');
-    }
-  }
-  /**
-   * 🔹 Mutation para recuperação de senha: Gera um token e envia um email com link de redefinição.
-   */
+  
   @Mutation(() => String)
-  async recoverPassword(@Args('email') email: string): Promise<string> {
-    await this.authService.handlePasswordRecovery(email);
-    return 'Se o email existir, um link de recuperação foi enviado.';
-  }
-
-  /**
-   * 🔑 Mutation para redefinir a senha do usuário usando um token de recuperação.
-   */
-  @Mutation(() => String)
-  async resetPassword(
-    @Args('token') token: string,
-    @Args('newPassword') newPassword: string
-  ): Promise<string> {
-    await this.authService.handlePasswordReset(token, newPassword);
-    return 'Senha redefinida com sucesso!';
-  }
+  async login(@Args('email') email: string, @Args('password') password: string): Promise<string> {
+    const token = await this.authService.login(email, password);
+    return token.access_token;
 }

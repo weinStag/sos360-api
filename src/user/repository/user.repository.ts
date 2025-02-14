@@ -4,8 +4,8 @@ import { attendantSchema } from '../schema/attendant.schema';
 import { requesterSchema } from '../schema/requester.schema';
 import { PrismaService } from './../../database/service/prisma.service';
 import { Injectable } from '@nestjs/common';
-import { updateUser } from '../input/update-user';
-import { updateRequester } from '../input/update-requester';
+import { updateUser } from '../input/update-user.input';
+import { updateRequester } from '../input/update-requester.input';
 
 @Injectable()
 export class UserRepository {

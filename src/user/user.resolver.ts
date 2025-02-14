@@ -7,9 +7,9 @@ import { requesterInput } from './input/requester.input';
 import { CustomLogger } from 'src/logger/custom.logger';
 import { CryptService } from 'src/crypt/crypt.service';
 import { UseGuards } from '@nestjs/common';
-import { updateUser } from './input/update-user';
+import { updateUser } from './input/update-user.input';
 import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
-import { updateRequester } from './input/update-requester';
+import { updateRequester } from './input/update-requester.input';
 
 @Resolver()
 export class UserResolver {
